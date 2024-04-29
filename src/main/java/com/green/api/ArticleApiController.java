@@ -89,9 +89,11 @@ public class ArticleApiController {
 		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		return  result;
 	}
-	// {"시간 예약","1240"},
-	// {"테이블 지정","A12"},
-	// {"메뉴 선택","Branch A"}
+	// [
+	// {"시간 예약" : "1240"},
+	// {"테이블 지정" : "A12"},
+	// {"메뉴 선택" : "Branch A"}
+	//]
 	// Transaction : 세개의 data를 받아서 서비스 함수에 넘겨주고 결과는 받는다
 	@PostMapping("/api/transaction-test")
 	public ResponseEntity<List<Article>> transactionTest( @RequestBody List<ArticleForm> dtos){
@@ -101,6 +103,16 @@ public class ArticleApiController {
 		   = ( createdList != null  ) 
 		   ? ResponseEntity.status(HttpStatus.OK).body(createdList)     
 		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		return  result;
+	}
+	@PostMapping("/api/transaction-test2")
+	public ResponseEntity<List<Article>> transactionTest2( @RequestBody List<ArticleForm> dtos){
+		
+		List<Article> createdList = articleService.createArticles2(dtos);
+		ResponseEntity<List<Article>> result
+		= ( createdList != null  ) 
+		? ResponseEntity.status(HttpStatus.OK).body(createdList)     
+				: ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		return  result;
 	}
 }
