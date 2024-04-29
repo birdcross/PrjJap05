@@ -43,6 +43,8 @@
     <li><a id="post" href="/api/articles">새글 추가(post)</a></li>
     <li><a id="patch" href="/api/articles">글 수정(patch)</a></li>
     <li><a id="delete" href="/api/articles">글 삭제(delete)</a></li>
+    <li>&nbsp;</li>
+    <li><a id="trans1" href="/api/transaction-test">트랜잭션 테스트</a></li>
   </ul>
   
   <script>
@@ -193,6 +195,10 @@
             
 	    }
     })
+    // 동적으로 생성된 요소에 이벤트 바인딩
+	// createElement로 요소를 생성하지 않고 직접 html을 작성해서 innerHTML이나 jQuery의 append()와 같은 방법으로 요소를 동적으로 생성할 경우에는 이벤트 바인딩이 되지 않는다.
+	// 이런 경우에는 동적으로 생성된 요소의 부모 요소 중 동적으로 생성되지 않은 요소에 이벤트를 바인딩 하면 된다. 
+	
     let pMode = document.querySelector('#output')
     pMode.addEventListener('click', (e) =>{
     	console.dir(e);
@@ -200,7 +206,9 @@
     	let id = tds[0].innerHTML;
     	let title = tds[1].innerHTML;
     	let content = tds[2].innerHTML;
-    	alert(id + ',' + title + ',' + content)
+    	document.querySelector('#id').value = id;
+    	document.querySelector('#title').value = title;
+    	document.querySelector('#content').value = content;
     })
   </script>
 </body>

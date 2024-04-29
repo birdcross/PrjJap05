@@ -1,5 +1,6 @@
 package com.green.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,26 @@ public class ArticleService {
 		// 3. 업데이트 및 정상응답(ok)
 		articleRepository.delete(target);
 		return target;
+	}
+
+	public List<Article> createArticles(List<ArticleForm> dtos) {
+		// 1 DTO 묶음을 엔티티 묶음으로 변환
+		List<Article> articleList = new ArrayList<Article>();
+		for(ArticleForm dto : dtos) {
+			Article article = dto.toEntity();
+			articleList.add(article);
+		}
+		// 2. 엔티티 묶음 (articleList)을 db에 저장한다.
+		for(int i = 0 ; i < articleList.size(); i++) {
+			Article article = articleList.get(i);
+			articleRepository.save(article);
+		}
+		
+		// 3. 강제 에러 발생
+		articleRepository.findById(-1L).orElseThrow(() -> {
+		    throw new IllegalArgumentException("결제 실패!!!");
+		});
+		return articleList;
 	}
 	
 }
