@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,9 +61,33 @@ public class ArticleApiController {
 	} 
 
 	// PATCH    : UPDATE
-
+	@PatchMapping("/api/articles/{id}")
+	public  ResponseEntity<Article> update(
+			@PathVariable Long id,
+			@RequestBody ArticleForm  dto
+			) {
+		System.out.println("id :  "+ id + ",dto:"+ dto);
+		Article updated = articleService.update(id, dto);
+		ResponseEntity<Article> result
+		   = ( updated != null  ) 
+		   ? ResponseEntity.status(HttpStatus.OK).body(updated)     
+		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		return  result;
+	}
 	// DELETE   : DELETE
-	
+	@DeleteMapping("/api/articles/{id}")
+	public  ResponseEntity<Article> delete(
+			@PathVariable Long id,
+			@RequestBody ArticleForm  dto
+			) {
+		System.out.println("id :  "+ id + ",dto:"+ dto);
+		Article deleted = articleService.delete(id);
+		ResponseEntity<Article> result
+		   = ( deleted != null  ) 
+		   ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()     
+		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		return  result;
+	}
 }
 
 

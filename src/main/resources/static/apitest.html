@@ -3,6 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+	table {
+		width : 80%;
+	 	margin:0 auto;}
+	table, th, td{
+		border : 1px solid #ccc;
+	}
+	td {
+		padding : 10px;
+		text-align: center;
+		}
+	tr {
+		background-color : ''
+	}
+	tr:hover:not(tr:first-child) {
+		background-color : yellow
+		}
+	tr:first-child {
+		background : #000;
+		color : #FFF;
+	}
+</style>
 </head>
 <body>
   <h2>Articles API tester</h2>
@@ -18,9 +40,9 @@
   <ul>
     <li><a id="get" href="/api/articles">Article 목록 조회(get)</a></li>
     <li><a id="getOne" href="/api/articles">한개의 Article 조회(get)</a></li>
-    <li><a id="post" href="/api/articles">새글추가(post)</a></li>
-    <li><a id="patch" href="/api/articles">글수정(patch)</a></li>
-    <li><a id="delete" href="/api/articles">글삭제(Delete)</a></li>
+    <li><a id="post" href="/api/articles">새글 추가(post)</a></li>
+    <li><a id="patch" href="/api/articles">글 수정(patch)</a></li>
+    <li><a id="delete" href="/api/articles">글 삭제(delete)</a></li>
   </ul>
   
   <script>
@@ -31,47 +53,65 @@
             e.preventDefault(); // 기존 a tag 기능을 무력화
 			//alert(aEl.id);
             
+            let id      = null;
+            let title   = null;
+            let content = null;
+            let params  = null;
             switch( aEl.id  ) {
             case "get":
         	    fetch(aEl.href)  // == fetch(aEl.href, { method:'GET'})
 	             .then( response => response.json() )
-	             .then( json     => {
-	                 console.dir(json)
-	                 outputEl.innerHTML = JSON.stringify( json );
+	             .then( articleList => {
+	                 console.dir(articleList)
+	                 let html = JSON.stringify(articleList) + "<br>"
+	                 html += "<table>"
+	                 html += "<tr><td>아이디</td><td>내용</td><td>제목</td></tr>"
+	               	 articleList.forEach((article)=>{
+	                	html +="<tr>"
+	                	html +="<td>" + article.id + "</td>"
+	                	html +="<td>" + article.title + "</td>"
+	                	html +="<td>" + article.content + "</td>"
+	                	html +="</tr>"
+	                	
+	                }) 
+	              	html += "</table>"
+	                 outputEl.innerHTML = html;
 	             } )
 	             .catch( error   => console.dir(error));
-	            break;            
+	            break;  
+	            
             case "getOne":
                 const numId = document.querySelector('#id').value; 
-	            fetch(aEl.href + "/" + numId )
-	             .then( response => response.json() )
-	             .then( json     => {
-	                 console.dir(json)
-	                 outputEl.innerHTML = JSON.stringify( json );
-	             } )
-	             .catch( error   => console.dir(error));
-	            break;
-            case "post":            	
-                //let numId = document.querySelector('#id').value;
-                let id = document.querySelector('#id').value
-                let title = document.querySelector('#title').value
-                let content = document.querySelector('#content').value
-                let params = {
-                	method : "POST",
-                	headers : {
-                		"Accept" : "application/json",
-                		"content-Type" : "application/json",
-                		"Access-contorl-Origin" : "*" // CORS 정책을 피한다.
-                	},
-                	body : JSON.stringify({
-                		id : id,
-                		title : title,
-                		content : content,
-                	}),
-                }
                 
-	            //fetch(aEl.href, new URLSearchParams(params))
-	            fetch(aEl.href, params)
+	            fetch(aEl.href + "/" + numId )
+	             .then( response => response.json() )  // json = JSON.parse()
+	             .then( json     => {
+	                 console.dir(json)
+	                 outputEl.innerHTML = JSON.stringify( json );
+	                 document.querySelector('#id').value      = json.id;
+	                 document.querySelector('#title').value   = json.title;
+	                 document.querySelector('#content').value = json.content;
+	             } )
+	             .catch( error   => console.dir(error));
+	            break;
+	            
+            case "post":           
+            	title    = document.querySelector('#title').value
+            	content  = document.querySelector('#content').value
+                params = {
+            		method: "POST",
+            		headers : {
+            			   "Accept"       : "application/json",
+                 		   "Content-Type" : "application/json",                                                                                                
+                 		   "Access-Control-Origin": "*"     // CORS 정책을 피한다
+                 	},
+            		body: JSON.stringify({
+            		    title   :  title,
+            		    content :  content,
+            		}),
+                }
+	         //   fetch(aEl.href, new URLSearchParams( params ) )
+	            fetch(aEl.href,  params  )
 	             .then( response => response.json() )
 	             .then( json     => {
 	                 console.dir(json)
@@ -79,12 +119,89 @@
 	             } )
 	             .catch( error   => console.dir(error));
 	            break;
+	            
+            case "patch":           
+            	id       = document.querySelector('#id').value
+            	title    = document.querySelector('#title').value
+            	content  = document.querySelector('#content').value
+                params = {
+            		method: "PATCH",
+            		headers : {
+            			   "Accept"       : "application/json",
+                 		   "Content-Type" : "application/json",                                                                                                
+                 		   "Access-Control-Origin": "*"     // CORS 정책을 피한다
+                 	},
+            		body: JSON.stringify({
+                        id      :  id,  
+            		    title   :  title,
+            		    content :  content,
+            		}),
+                }
+	         //   fetch(aEl.href, new URLSearchParams( params ) )
+	            fetch(aEl.href + "/" + id,  params  )
+	             .then( response => response.json() )
+	             .then( json     => {
+	                 console.dir(json)
+	                 outputEl.innerHTML = JSON.stringify( json );
+	             } )
+	             .catch( error   => console.dir(error));
+	            break;
+	            
+            case "delete":           
+                id = document.querySelector('#id').value;
+                params = {
+                    method: "DELETE",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+              		   	"Access-Control-Origin": "*"     // CORS 정책을 피한다
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                    }),
+                }
+                // URL을 aEl.href에서 id를 포함하는 URL로 변경해야 할 수도 있습니다.
+                // 예: `http://example.com/resource/${id}` 와 같이.
+                fetch(aEl.href + "/" + id, params)
+                    .then(response =>{
+                      switch(response.status){
+                      case 204 : alert(id + '번이 삭제되었습니다'); break;
+              	    fetch(aEl.href)  // == fetch(aEl.href, { method:'GET'})
+   	            	.then( response => response.json() )
+   	             	.then( articleList => {
+   	                 console.dir(articleList)
+   	                 let html = JSON.stringify(articleList) + "<br>"
+   	                 html += "<table>"
+   	                 html += "<tr><td>아이디</td><td>내용</td><td>제목</td></tr>"
+   	               	 articleList.forEach((article)=>{
+   	                	html +="<tr>"
+   	                	html +="<td>" + article.id + "</td>"
+   	                	html +="<td>" + article.title + "</td>"
+   	                	html +="<td>" + article.content + "</td>"
+   	                	html +="</tr>"
+   	                	
+   	                }) 
+   	              	html += "</table>"
+   	                 outputEl.innerHTML = html;
+   	             } )
+   	             .catch( error   => console.dir(error));
+                      case 400 : alert('삭제되지  않았습니다'); break;
+                      }
+                    })
+                break;
             }
             
 	    }
     })
-    
-  
+    let pMode = document.querySelector('#output')
+    pMode.addEventListener('click', (e) =>{
+    	console.dir(e);
+    	const tds = e.target.parentElement.children;
+    	let id = tds[0].innerHTML;
+    	let title = tds[1].innerHTML;
+    	let content = tds[2].innerHTML;
+    	alert(id + ',' + title + ',' + content)
+    })
   </script>
 </body>
 
