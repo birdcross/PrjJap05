@@ -3,7 +3,9 @@ package com.green.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,17 +16,23 @@ import lombok.Setter;
 @NoArgsConstructor    // 기본생성자 : default constructor
 @Getter
 @Setter
+@SequenceGenerator(name="ARTICLE_SEQ_GENERATOR",
+sequenceName = "ARTICLE_SEQ",
+initialValue = 1, //초기값
+allocationSize = 1) // 증가치
 public class Article {
 	// primary key        : @id
 	// 값을 자동으로 채움 : @GeneratedValue
 	@Id
-	@GeneratedValue
+	//@GeneratedValue // 자동번호증가
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ARTICLE_SEQ_GENERATOR")
 	private  Long    id;      // long :null 입력안됨 -> Long
 	@Column
 	private  String  title;
 	@Column
 	private  String  content;
 	
+	// 자바에 사용하기 위해 만든 내용
 	// 생성자
 	public Article(Long id, String title, String content) {		
 		this.id = id;
