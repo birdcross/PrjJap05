@@ -65,6 +65,28 @@ public class CommentService {
 		// 변환이유가 controller 에서 entity type 을 사용하지 않기 위해
 		return CommentDto.createCommentDto(created);
 	}
+	@Transactional
+	public CommentDto update(Long id, CommentDto dto) {
+		// 1. 댓글 조회 및 예외 발생
+		Comments target = commentRepository.findById(id).orElseThrow( () -> new IllegalArgumentException("댓글 수정 실패 수정할 댓글이 없습니다.")); //댓글 id
+		// 2. 댓글수정
+		//target : 수하정할 원본 데이터
+		//dto : 수정할 입력받은 데이터
+		target.patch(dto); //target <- dtd(nickname, body)
+		// 3. db에 저장
+		Comments updated = commentRepository.save(target);
+		// 4. 결과 return
+		return CommentDto.createCommentDto(updated);
+	}
+
+	public CommentDto delete(Long id) {
+		// 1. 삭제할 댓글 조회
+		Comments target = commentRepository.findById(id).orElseThrow( () -> new IllegalArgumentException("댓글 삭제 실패 삭제할 댓글이 없습니다."));
+		// 2. 실제 db에서 삭제
+		commentRepository.delete(target);
+		// 삭제 댓글을 dto로 반환한후 리턴
+		return CommentDto.createCommentDto(target);
+	}
 	
 
 }
