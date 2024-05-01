@@ -14,7 +14,7 @@ public class CommentDto {
 	private Long  articleId;
 	private String nickname; 
 	private String body;
-	
+	// CommentDto <- Comments (db에 조회한)
 	public static CommentDto createCommentDto(Comments comments) {
 		return new CommentDto(
 				comments.getId(),

@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.green.dto.CommentDto;
@@ -25,12 +27,22 @@ public class CommentApiController {
 		
 		// 정보 조회를 서비스에게 위임
 		List<CommentDto> dtos = commentService.comments(articleId);
+		
+		// ResponseEntity : staus.ok + dtos(arraylist)
+		// -> json 으로 출력 (이유 : @RestController 라서 )) 를 리턴
 		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
 
 	//2. 댓글생성 (POST)
-	//@PostMapping("/api/articles/{articleId}/comments")
-	//public ResponseEntity<List<Comments>> create(@PathVariable Long articleId){
+	@PostMapping("/api/articles/{articleId}/comments")
+	public ResponseEntity<CommentDto> create(
+			@PathVariable Long articleId, //{articleId} : 게시글번호
+			@RequestBody CommentDto dto){ //입력된 자료들 input, select
+		CommentDto creatDto = commentService.create(articleId, dto);
+		//결과를 응답
+		return ResponseEntity.status(HttpStatus.OK).body(dto);
+		
+	}
 		
 }
 

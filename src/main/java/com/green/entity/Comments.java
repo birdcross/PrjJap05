@@ -1,5 +1,7 @@
 package com.green.entity;
 
+import com.green.dto.CommentDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,5 +31,20 @@ public class Comments {
 	private String nickname;
 	@Column
 	private String body;
+	public static Comments createComment(CommentDto dto, Article article ) {
+		
+		if(dto.getId() != null) // 입력된 댓글에 id가 존재하면 
+			throw new IllegalArgumentException("댓글 생성실패! 댓글의 id가 없어야한다");
+		// dto.getArticleId() :  입력받은 게시글의 id
+		// article.geId() : 조회한 게시글 id
+		if(dto.getArticleId() != article.getId())
+			throw new IllegalArgumentException("댓글 생성실패! 게시글의 id가 잘못되었습니다");
+		
+		return new Comments(dto.getId(),  //입력받은 댓글아이디
+				article,//조회한 부모게시글 정보
+				dto.getNickname(), //입력받은 댓글 닉네임
+				dto.getBody()); //입력받은 댓글내용
+	}
+	
 	
 }
