@@ -36,7 +36,7 @@ public class ArticleService {
 	public Article create(ArticleForm dto) {
 
 		// 입력 data dto : {"id":1, "title":"새글", "content":"새글 내용"}
-		Article article = dto.toEntity();
+		Article article = dto.toEntity(); // dto ->를 entity로 변환
 
 		// create 는 생성요청이고 번호 자동증가이므로 번호 필요없다
 		// 그래서 id 가 존재하면 안된다
